@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+/* 设计 token 沿用主仓库 web/src/index.css，暗色跟随系统。 */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #f7f7f9;
+  --bg-muted: #efeff3;
+  --surface: #ffffff;
+  --border: #e4e4ea;
+  --border-strong: #cfcfd9;
+  --fg: #17171c;
+  --fg-muted: #565662;
+  --fg-subtle: #858592;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-fg: #ffffff;
+  --accent-text: #4f46e5;
+  --accent-subtle: #eef0ff;
+  --warning: #a16207;
+  --warning-subtle: #fef6d8;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.06);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121314;
+    --bg-subtle: #191a1b;
+    --bg-muted: #242526;
+    --surface: #202122;
+    --border: #2a2b2c;
+    --border-strong: #333536;
+    --fg: #bfbfbf;
+    --fg-muted: #8c8c8c;
+    --fg-subtle: #777879;
+    --accent: #297aa0;
+    --accent-hover: #2b7da3;
+    --accent-fg: #ffffff;
+    --accent-text: #48a0c7;
+    --accent-subtle: #1f323b;
+    --warning: #e5ba7d;
+    --warning-subtle: #352a05;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-muted: var(--bg-muted);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-text: var(--accent-text);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --shadow-card: var(--shadow);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}

@@ -1,0 +1,113 @@
+---
+// 首页全部区块。两种语言共用，文案按 lang 从字典取。
+import { dicts, links, type Lang } from '../i18n'
+import Diagram from './Diagram.astro'
+import Code from './Code.astro'
+
+interface Props {
+  lang: Lang
+}
+const { lang } = Astro.props
+const t = dicts[lang]
+---
+
+<section class="mx-auto max-w-5xl px-5 pt-16 pb-12 md:pt-24">
+  <p class="mb-4 text-sm text-fg-muted">{t.hero.status}</p>
+  <h1 class="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+    {t.hero.title}{' '}
+    <span class="text-accent-text">{t.hero.titleAccent}</span>
+  </h1>
+  <p class="mt-6 max-w-3xl text-lg leading-relaxed text-fg-muted">{t.hero.lead}</p>
+  <div class="mt-8 flex flex-wrap gap-3">
+    <a href="#quickstart" class="rounded-md bg-accent px-5 py-2.5 font-medium text-accent-fg hover:bg-accent-hover">{t.hero.primary}</a>
+    <a href={links.repo} class="rounded-md border border-border-strong px-5 py-2.5 font-medium hover:bg-bg-subtle">{t.hero.secondary}</a>
+  </div>
+  <div class="mt-12"><Diagram lang={lang} /></div>
+</section>
+
+<section class="border-t border-border bg-bg-subtle">
+  <div class="mx-auto max-w-5xl px-5 py-16">
+    <h2 class="text-2xl font-semibold tracking-tight">{t.why.heading}</h2>
+    <p class="mt-4 max-w-3xl leading-relaxed text-fg-muted">{t.why.lead}</p>
+    <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        t.why.items.map((it) => (
+          <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
+            <h3 class="font-semibold">{it.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{it.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-10 rounded-xl border border-border bg-surface p-5">
+      <h3 class="font-semibold">{t.tradeoffs.heading}</h3>
+      <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-fg-muted">
+        {t.tradeoffs.items.map((s) => <li>{s}</li>)}
+      </ul>
+      <p class="mt-4 text-sm text-fg-subtle">{t.tradeoffs.notInScope}</p>
+    </div>
+  </div>
+</section>
+
+<section id="quickstart" class="scroll-mt-16 border-t border-border">
+  <div class="mx-auto max-w-5xl px-5 py-16">
+    <h2 class="text-2xl font-semibold tracking-tight">{t.quickstart.heading}</h2>
+    <p class="mt-3 max-w-3xl text-fg-muted">{t.quickstart.lead}</p>
+    <ol class="mt-8 space-y-8">
+      {
+        t.quickstart.steps.map((s, i) => (
+          <li class="grid gap-3 md:grid-cols-[2.5rem_1fr]">
+            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent-subtle text-sm font-semibold text-accent-text">{i + 1}</div>
+            <div>
+              <h3 class="font-semibold">{s.title}</h3>
+              <p class="mt-1 text-sm text-fg-muted">{s.body}</p>
+              {s.code !== null && (
+                <div class="mt-3">
+                  <Code code={s.code} />
+                </div>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="mt-8 text-sm"><a href={links.deploy} class="text-accent-text hover:underline">{t.quickstart.docsLink} →</a></p>
+  </div>
+</section>
+
+<section class="border-t border-border bg-bg-subtle">
+  <div class="mx-auto max-w-5xl px-5 py-16">
+    <h2 class="text-2xl font-semibold tracking-tight">{t.clients.heading}</h2>
+    <ul class="mt-8 grid gap-6 md:grid-cols-3">
+      {
+        t.clients.items.map((it) => (
+          <li class="rounded-xl border border-border bg-surface p-5 shadow-card">
+            <h3 class="font-semibold">{it.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{it.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-6"><Code code={t.clients.cliCode} /></div>
+  </div>
+</section>
+
+<section class="border-t border-border">
+  <div class="mx-auto grid max-w-5xl gap-10 px-5 py-16 md:grid-cols-[3fr_2fr]">
+    <div>
+      <h2 class="text-2xl font-semibold tracking-tight">{t.privacy.heading}</h2>
+      <ul class="mt-6 list-disc space-y-3 pl-5 leading-relaxed text-fg-muted">
+        {t.privacy.items.map((s) => <li>{s}</li>)}
+      </ul>
+      <p class="mt-6 text-sm"><a href={links.security} class="text-accent-text hover:underline">{t.privacy.link} →</a></p>
+    </div>
+    <aside class="self-start rounded-xl border border-border bg-surface p-6 shadow-card">
+      <div class="flex items-center gap-3">
+        <h2 class="text-xl font-semibold tracking-tight">{t.publicHub.heading}</h2>
+        <span class="rounded-full bg-warning-subtle px-2.5 py-0.5 text-xs font-medium text-warning">{t.publicHub.badge}</span>
+      </div>
+      <p class="mt-4 text-sm leading-relaxed text-fg-muted">{t.publicHub.body}</p>
+      <p class="mt-4 text-sm"><a href={links.roadmap} class="text-accent-text hover:underline">{t.publicHub.link} →</a></p>
+    </aside>
+  </div>
+</section>

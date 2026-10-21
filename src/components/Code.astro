@@ -1,0 +1,9 @@
+---
+// 代码块：不做高亮，保持零 JS 和低依赖。
+interface Props {
+  code: string
+}
+const { code } = Astro.props
+---
+
+<pre class="overflow-x-auto rounded-lg border border-border bg-bg-muted p-4 text-fg"><code>{code}</code></pre>

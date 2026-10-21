@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+*.tsbuildinfo
+.DS_Store
+
+# 本机的 registry 镜像等私有配置，不进仓库
+bunfig.toml
+.npmrc

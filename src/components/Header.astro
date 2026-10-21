@@ -1,0 +1,29 @@
+---
+import { dicts, links, type Lang } from '../i18n'
+
+interface Props {
+  lang: Lang
+}
+const { lang } = Astro.props
+const t = dicts[lang]
+const home = lang === 'en' ? '/' : '/zh/'
+---
+
+<header class="border-b border-border bg-bg/80 backdrop-blur sticky top-0 z-10">
+  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3">
+    <a href={home} class="flex items-center gap-2 font-semibold tracking-tight">
+      <img src="/logo.svg" alt="" width="28" height="28" />
+      <span>Anycon</span>
+    </a>
+    <nav class="flex items-center gap-5 text-sm text-fg-muted">
+      <a href={links.docs} class="hover:text-fg">{t.nav.docs}</a>
+      <a href={links.repo} class="hover:text-fg">{t.nav.github}</a>
+      <a href={t.otherLang.href} hreflang={lang === 'en' ? 'zh-CN' : 'en'} class="hover:text-fg">{t.otherLang.label}</a>
+      <a
+        href="#quickstart"
+        class="hidden sm:inline-flex rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-accent-fg hover:bg-accent-hover"
+        >{t.nav.install}</a
+      >
+    </nav>
+  </div>
+</header>

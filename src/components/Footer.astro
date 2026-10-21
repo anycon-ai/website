@@ -1,0 +1,24 @@
+---
+import { dicts, links, type Lang } from '../i18n'
+
+interface Props {
+  lang: Lang
+}
+const { lang } = Astro.props
+const t = dicts[lang]
+---
+
+<footer class="border-t border-border bg-bg-subtle">
+  <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-8 text-sm text-fg-muted">
+    <div class="flex items-center gap-2">
+      <img src="/logo.svg" alt="" width="20" height="20" />
+      <span>Anycon · {t.footer.license}</span>
+    </div>
+    <nav class="flex flex-wrap gap-5">
+      <a href={links.docs} class="hover:text-fg">{t.footer.docs}</a>
+      <a href={links.repo} class="hover:text-fg">{t.footer.github}</a>
+      <a href={links.releases} class="hover:text-fg">{t.footer.releases}</a>
+      <a href={links.security} class="hover:text-fg">{t.footer.security}</a>
+    </nav>
+  </div>
+</footer>
