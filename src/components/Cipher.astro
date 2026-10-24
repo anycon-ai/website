@@ -1,0 +1,49 @@
+---
+// 一串不停跳动的「密文」，示意加密后的数据。字符在构建时用固定种子生成，构建结果可复现。
+interface Props {
+  seed: number
+  length?: number
+}
+const { seed, length = 8 } = Astro.props
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+const FRAMES = 8
+// xorshift32，只求每串看起来不一样，不追求随机质量。种子不能为 0。
+let s = seed >>> 0 || 1
+const next = () => {
+  s ^= s << 13
+  s ^= s >>> 17
+  s ^= s << 5
+  return s >>> 0
+}
+const frames = Array.from({ length: FRAMES }, () =>
+  Array.from({ length }, () => ALPHABET.charAt(next() % ALPHABET.length)).join(''),
+)
+---
+
+<span class="cipher" aria-hidden="true"><span class="reel">{frames.map((f) => <span>{f}</span>)}</span></span>
+
+<style>
+  /* 一行高的窗口，里面竖排 8 帧，按步进动画逐帧上移 */
+  .cipher {
+    display: inline-block;
+    height: 1lh;
+    overflow: hidden;
+    vertical-align: top;
+  }
+  .reel {
+    display: flex;
+    flex-direction: column;
+    white-space: pre;
+    animation: scramble 0.96s steps(8) infinite;
+  }
+  @keyframes scramble {
+    to {
+      transform: translateY(-100%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reel {
+      animation: none;
+    }
+  }
+</style>

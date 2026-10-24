@@ -25,9 +25,21 @@ export const en = {
     machineLines: ['anycon daemon', '├ Claude Code', '└ Codex, …'],
     hubLines: ['anycon-hub', 'relays ciphertext', 'sees metadata only'],
     clientLines: ['Web UI / PWA', 'anycon CLI', 'TypeScript SDK'],
-    outbound: 'outbound',
-    transport: 'HTTPS / WebSocket',
+    // 两段连接：用的协议，以及由哪一端发起
+    pipes: {
+      machine: { name: 'WebSocket', note: 'your machine dials out' },
+      client: { name: 'HTTPS / WebSocket', note: 'the client connects' },
+    },
     e2e: 'end-to-end encrypted (Noise)',
+    // 动画里演示的一来一回
+    prompt: 'run the tests',
+    reply: '42 tests passed',
+    encrypt: 'encrypt',
+    decrypt: 'decrypt',
+    devices: { machine: 'mac-mini', client: 'phone' },
+    envelope: { from: 'from', to: 'to', size: 'size', body: 'body' },
+    summary:
+      'Animated diagram: a prompt typed on a client is encrypted on that client, relayed by the hub as ciphertext, and decrypted by the daemon on your machine. The agent’s reply travels back the same way. The hub reads only envelope metadata such as sender, recipient, and size.',
   },
   why: {
     heading: 'Why Anycon',
