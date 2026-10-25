@@ -1,41 +1,345 @@
 ---
-// 首页架构图：三个盒子加两条线，纯 HTML/CSS，窄屏竖排。
+// 首页架构图：你的机器、hub、客户端三个节点，两段管道，外加贯穿两端的 Noise 加密会话。
+// 动画演示一来一回：客户端发出的提示在客户端加密，经两段管道到 daemon 才解密；agent 的回复原路返回。
+// 纯 CSS，零 JS：.flow 上的 --phase 每个周期从 0 走到 1，每个动画元素用内联的 --a / --b
+// （在周期里的起止位置）算出自己的透明度或在管道里的位置。编排全在下面的 timeline 里。
+// 窄屏竖排；prefers-reduced-motion 时停在一帧静态画面（带 data-static 的元素）。
 import { dicts, type Lang } from '../i18n'
+import Cipher from './Cipher.astro'
+import Lock from './Lock.astro'
 
 interface Props {
   lang: Lang
 }
 const { lang } = Astro.props
 const d = dicts[lang].diagram
-const boxes = [
-  { label: d.machine, lines: d.machineLines },
-  { label: d.hub, lines: d.hubLines },
-  { label: d.clients, lines: d.clientLines },
+
+// 一个周期的秒数，以及每一步的起止秒数。
+const CYCLE = 20
+const END = 19.4
+const timeline = {
+  // 请求：客户端 → hub → 你的机器
+  clientPrompt: [0.3, END],
+  clientEncrypt: [1.0, 2.4],
+  requestToHub: [2.0, 3.9],
+  hubRequest: [3.8, 5.6],
+  requestToMachine: [5.5, 7.4],
+  machineDecrypt: [7.2, 8.6],
+  machinePrompt: [8.2, END],
+  // 回复：你的机器 → hub → 客户端
+  machineReply: [9.2, END],
+  machineEncrypt: [9.8, 11.2],
+  replyToHub: [10.8, 12.7],
+  hubReply: [12.6, 14.4],
+  replyToClient: [14.3, 16.2],
+  clientDecrypt: [16.0, 17.4],
+  clientReply: [16.8, END],
+} satisfies Record<string, [number, number]>
+type Step = keyof typeof timeline
+
+// 内联样式：把秒换算成周期里的比例。
+const at = (step: Step) => {
+  const [a, b] = timeline[step]
+  return `--a:${(a / CYCLE).toFixed(4)};--b:${(b / CYCLE).toFixed(4)}`
+}
+// 每串密文用步骤名做种子，看起来各不相同（FNV-1a）。
+const seed = (step: Step) => [...step].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261)
+
+interface Wire {
+  step: Step
+  open: boolean
+  text: string
+}
+type Node =
+  | { kind: 'endpoint'; label: string; lines: readonly string[]; prompt: Step; reply: Step; wire: [Wire, Wire] }
+  | { kind: 'hub'; label: string; lines: readonly string[] }
+// dial：哪一端发起连接。forward 是从你的机器往客户端的方向，宽屏向右、窄屏向下
+type Pipe = { kind: 'pipe'; name: string; note: string; dial: 'forward' | 'back'; request: Step; reply: Step }
+type Cell = Node | Pipe
+
+const hubSteps = ['hubRequest', 'hubReply'] as const
+// 节点亮起的时刻：hub 转发时，两端加密、解密时
+const glowSteps = (n: Node): readonly Step[] => (n.kind === 'hub' ? hubSteps : n.wire.map((w) => w.step))
+
+const cells: Cell[] = [
+  {
+    kind: 'endpoint',
+    label: d.machine,
+    lines: d.machineLines,
+    prompt: 'machinePrompt',
+    reply: 'machineReply',
+    wire: [
+      { step: 'machineDecrypt', open: true, text: d.decrypt },
+      { step: 'machineEncrypt', open: false, text: d.encrypt },
+    ],
+  },
+  { kind: 'pipe', ...d.pipes.machine, dial: 'forward', request: 'requestToMachine', reply: 'replyToHub' },
+  { kind: 'hub', label: d.hub, lines: d.hubLines },
+  { kind: 'pipe', ...d.pipes.client, dial: 'back', request: 'requestToHub', reply: 'replyToClient' },
+  {
+    kind: 'endpoint',
+    label: d.clients,
+    lines: d.clientLines,
+    prompt: 'clientPrompt',
+    reply: 'clientReply',
+    wire: [
+      { step: 'clientEncrypt', open: false, text: d.encrypt },
+      { step: 'clientDecrypt', open: true, text: d.decrypt },
+    ],
+  },
 ]
-const arrows = [d.outbound, d.transport]
+
+// hub 拆开信封能读到的字段：请求和回复各一份。内容只有密文。
+const envelope = [
+  { label: d.envelope.from, request: d.devices.client, reply: d.devices.machine },
+  { label: d.envelope.to, request: d.devices.machine, reply: d.devices.client },
+  { label: d.envelope.size, request: '412 B', reply: '1.6 KB' },
+]
 ---
 
-<figure class="rounded-xl border border-border bg-surface p-5 shadow-card">
-  <div class="grid grid-cols-1 items-center gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
+<figure class="flow rounded-xl border border-border bg-surface p-5 shadow-card" style={`--cycle:${CYCLE}s`}>
+  <div
+    class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(8rem,0.75fr)_minmax(0,1fr)_minmax(8rem,0.75fr)_minmax(0,1fr)]"
+  >
     {
-      boxes.map((b, i) => (
-        <>
-          <div class="rounded-lg border border-border-strong bg-bg-subtle p-4">
-            <div class="mb-2 text-xs font-medium uppercase tracking-wide text-fg-subtle">{b.label}</div>
-            <pre class="text-fg">{b.lines.join('\n')}</pre>
-          </div>
-          {i < arrows.length && (
-            <div class="flex flex-col items-center text-xs text-fg-muted md:px-2">
-              <span class="mb-1">{arrows[i]}</span>
-              <span aria-hidden="true" class="hidden md:inline text-fg-subtle">{i === 0 ? '──────►' : '◄──────'}</span>
-              <span aria-hidden="true" class="md:hidden text-fg-subtle">{i === 0 ? '▼' : '▲'}</span>
+      cells.map((c) =>
+        c.kind === 'pipe' ? (
+          <div class="grid h-24 grid-cols-[1fr_5rem_1fr] items-center gap-3 lg:flex lg:h-auto lg:flex-col lg:justify-center lg:gap-2">
+            <span class="text-right text-xs text-fg-muted lg:px-2 lg:text-center">{c.name}</span>
+            <div class="tube" aria-hidden="true">
+              <span class="win packet" data-dir="back" style={at(c.request)}>
+                <Lock />
+                <Cipher seed={seed(c.request)} length={5} />
+              </span>
+              <span class="win packet" style={at(c.reply)} data-static>
+                <Lock />
+                <Cipher seed={seed(c.reply)} length={5} />
+              </span>
             </div>
-          )}
-        </>
-      ))
+            {/* 箭头指向被连的 hub；窄屏转 90° 变成上下 */}
+            <span class="text-[11px] text-fg-subtle lg:px-2 lg:text-center">
+              {c.dial === 'back' && <><span class="inline-block rotate-90 lg:rotate-0">←</span>{' '}</>}
+              {c.note}
+              {c.dial === 'forward' && <>{' '}<span class="inline-block rotate-90 lg:rotate-0">→</span></>}
+            </span>
+          </div>
+        ) : (
+          <div class="relative mx-auto w-full max-w-md rounded-lg border border-border-strong bg-bg-subtle p-4 lg:max-w-none">
+            {glowSteps(c).map((s) => (
+              <span class="win glow" style={at(s)} aria-hidden="true" />
+            ))}
+            <div class="mb-2 text-xs font-medium uppercase tracking-wide text-fg-subtle">{c.label}</div>
+            <pre class="text-fg">{c.lines.join('\n')}</pre>
+            {c.kind === 'hub' ? (
+              <dl class="screen grid grid-cols-[auto_minmax(0,1fr)] gap-x-3" aria-hidden="true">
+                {envelope.map((row) => (
+                  <>
+                    <dt class="text-fg-subtle">{row.label}</dt>
+                    <dd class="stack text-fg">
+                      <span class="win truncate" style={at('hubRequest')}>{row.request}</span>
+                      <span class="win truncate" style={at('hubReply')} data-static>{row.reply}</span>
+                    </dd>
+                  </>
+                ))}
+                <dt class="text-fg-subtle">{d.envelope.body}</dt>
+                <dd class="stack text-accent-text">
+                  {hubSteps.map((s) => (
+                    <span class="win sealed" style={at(s)} data-static={s === 'hubReply' ? '' : undefined}>
+                      <Lock />
+                      <Cipher seed={seed(s)} length={10} />
+                    </span>
+                  ))}
+                </dd>
+              </dl>
+            ) : (
+              <div class="screen" aria-hidden="true">
+                <div class="win truncate text-fg" style={at(c.prompt)} data-static>
+                  <span class="text-fg-subtle">›</span> {d.prompt}
+                </div>
+                <div class="win truncate text-fg" style={at(c.reply)} data-static>
+                  <span class="text-accent-text">✓</span> {d.reply}
+                </div>
+                <div class="stack text-accent-text">
+                  {c.wire.map((w) => (
+                    <span class="win sealed chip" style={at(w.step)}>
+                      <Lock open={w.open} />
+                      {w.text}
+                      <Cipher seed={seed(w.step)} />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ),
+      )
     }
+    {/* 宽屏：从你的机器到客户端的一道括线，Noise 会话穿过 hub */}
+    <div class="ml-[50%] hidden h-6 rounded-bl-lg border-b border-l border-dashed border-accent/50 lg:block" aria-hidden="true">
+    </div>
+    <div class="col-span-3 hidden h-6 items-end justify-center border-b border-dashed border-accent/50 lg:flex">
+      <span class="e2e-pill translate-y-1/2"><span class="flex text-accent-text"><Lock /></span>{d.e2e}</span>
+    </div>
+    <div class="mr-[50%] hidden h-6 rounded-br-lg border-r border-b border-dashed border-accent/50 lg:block" aria-hidden="true">
+    </div>
   </div>
-  <figcaption class="mt-4 text-center text-xs text-fg-muted">
-    <span class="rounded-full border border-border bg-bg-subtle px-3 py-1">🔒 {d.e2e}</span>
-  </figcaption>
+  <div class="mt-5 flex justify-center lg:hidden">
+    <span class="e2e-pill"><span class="flex text-accent-text"><Lock /></span>{d.e2e}</span>
+  </div>
+  <figcaption class="sr-only">{d.summary}</figcaption>
 </figure>
+
+<style>
+  @property --phase {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+  }
+  .flow {
+    --fade: 0.015;
+    animation: flow-phase var(--cycle) linear infinite;
+  }
+  @keyframes flow-phase {
+    to {
+      --phase: 1;
+    }
+  }
+
+  /* 在 [--a, --b] 之间可见，两端各用 --fade 淡入淡出 */
+  .win {
+    opacity: calc(
+      clamp(0, (var(--phase) - var(--a)) / var(--fade), 1) * clamp(0, (var(--b) - var(--phase)) / var(--fade), 1)
+    );
+  }
+
+  /* 叠放的几层占同一格，按时间轮流显示，高度不跳 */
+  .stack {
+    display: grid;
+  }
+  .stack > * {
+    grid-area: 1 / 1;
+  }
+
+  .screen {
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+  }
+  .sealed {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+  .chip {
+    width: fit-content;
+    border-radius: 0.25rem;
+    background: var(--accent-subtle);
+    padding-inline: 0.375rem;
+  }
+
+  /* 节点在加密、解密、转发时亮一下 */
+  .glow {
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--accent);
+    border-radius: inherit;
+    box-shadow: 0 0 20px -4px var(--accent);
+    pointer-events: none;
+  }
+
+  /* 管道：窄屏竖着连上下两个节点，宽屏横着连左右 */
+  .tube {
+    position: relative;
+    align-self: stretch;
+    border-inline: 1px solid var(--border-strong);
+    background: var(--bg-muted);
+  }
+  .tube::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    border-left: 1px dashed var(--border-strong);
+  }
+
+  /* 在管道里走的数据包：只有密文。--t 是这一段里的进度，--q 是缓动后的位置 */
+  .packet {
+    --t: clamp(0, (var(--phase) - var(--a)) / (var(--b) - var(--a)), 1);
+    --q: calc(var(--t) * var(--t) * (3 - 2 * var(--t)));
+    position: absolute;
+    left: 50%;
+    top: calc(var(--q) * (100% - 1.5rem));
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 4.25rem;
+    height: 1.5rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 999px;
+    background: var(--accent-subtle);
+    box-shadow: 0 0 12px -3px var(--accent);
+    color: var(--accent-text);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    /* 行高要比字形高，否则密文上下相邻的帧会露出一截 */
+    line-height: 1rem;
+  }
+  /* 反方向：客户端 → 你的机器 */
+  .packet[data-dir='back'] {
+    --t: clamp(0, (var(--b) - var(--phase)) / (var(--b) - var(--a)), 1);
+  }
+
+  .e2e-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-subtle);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+  }
+
+  @media (min-width: 64rem) {
+    .tube {
+      height: 2rem;
+      border-inline: 0;
+      border-block: 1px solid var(--border-strong);
+    }
+    .tube::before {
+      inset-block: auto;
+      inset-inline: 0;
+      top: 50%;
+      border-left: 0;
+      border-top: 1px dashed var(--border-strong);
+    }
+    .packet {
+      left: calc(3px + var(--q) * (100% - 4.25rem - 6px));
+      top: 50%;
+      translate: 0 -50%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow {
+      animation: none;
+    }
+    .win {
+      opacity: 0;
+    }
+    .win[data-static] {
+      opacity: 1;
+    }
+    .packet,
+    .packet[data-dir='back'] {
+      --t: 0.5;
+    }
+  }
+</style>

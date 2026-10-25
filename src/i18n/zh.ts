@@ -27,9 +27,19 @@ export const zh: Dict = {
     machineLines: ['anycon daemon', '├ Claude Code', '└ Codex, …'],
     hubLines: ['anycon-hub', '只转发密文', '只看到元数据'],
     clientLines: ['Web UI / PWA', 'anycon CLI', 'TypeScript SDK'],
-    outbound: '出站连接',
-    transport: 'HTTPS / WebSocket',
+    pipes: {
+      machine: { name: 'WebSocket', note: '你的机器主动出站' },
+      client: { name: 'HTTPS / WebSocket', note: '客户端发起连接' },
+    },
     e2e: '端到端加密（Noise）',
+    prompt: '跑一下测试',
+    reply: '42 个测试通过',
+    encrypt: '加密',
+    decrypt: '解密',
+    devices: { machine: 'mac-mini', client: 'phone' },
+    envelope: { from: '发送方', to: '接收方', size: '大小', body: '内容' },
+    summary:
+      '动画示意：在客户端输入的提示先在客户端加密，hub 只转发密文，到你机器上的 daemon 才解密；agent 的回复按原路返回。hub 能读到的只有信封上的元数据，比如发送方、接收方和大小。',
   },
   why: {
     heading: '为什么用 Anycon',

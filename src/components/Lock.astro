@@ -1,0 +1,23 @@
+---
+// 锁图标，open 为开锁（解密）。用 SVG 而不是 emoji，各平台显示一致。
+interface Props {
+  open?: boolean
+}
+const { open = false } = Astro.props
+---
+
+<svg
+  viewBox="0 0 24 24"
+  width="1em"
+  height="1em"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2.25"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  class="shrink-0"
+>
+  <rect x="4" y="11" width="16" height="10" rx="2"></rect>
+  <path d={open ? 'M8 11V7a4 4 0 0 1 7.75-1.4' : 'M8 11V7a4 4 0 0 1 8 0v4'}></path>
+</svg>
