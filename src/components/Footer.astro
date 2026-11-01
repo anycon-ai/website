@@ -1,5 +1,5 @@
 ---
-import { dicts, links, type Lang } from '../i18n'
+import { dicts, links, pagePath, type Lang } from '../i18n'
 
 interface Props {
   lang: Lang
@@ -19,6 +19,8 @@ const t = dicts[lang]
       <a href={links.repo} class="hover:text-fg">{t.footer.github}</a>
       <a href={links.releases} class="hover:text-fg">{t.footer.releases}</a>
       <a href={links.security} class="hover:text-fg">{t.footer.security}</a>
+      <a href={pagePath(lang, 'privacy')} class="hover:text-fg">{t.footer.privacy}</a>
+      <a href={pagePath(lang, 'terms')} class="hover:text-fg">{t.footer.terms}</a>
     </nav>
   </div>
 </footer>

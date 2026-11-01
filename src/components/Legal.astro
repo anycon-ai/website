@@ -1,0 +1,88 @@
+---
+// 法律文本页（隐私政策、服务条款）：标题、更新日期、译本说明，正文来自 src/legal/ 下的 Markdown。
+// 正文是长篇条文，按语言各写一份 Markdown，不进 i18n 字典；英文版是真源。
+import { dicts, type Lang } from '../i18n'
+import * as privacyEn from '../legal/privacy.en.md'
+import * as privacyZh from '../legal/privacy.zh.md'
+import * as termsEn from '../legal/terms.en.md'
+import * as termsZh from '../legal/terms.zh.md'
+
+interface Props {
+  lang: Lang
+  doc: 'privacy' | 'terms'
+}
+const { lang, doc } = Astro.props
+const t = dicts[lang]
+const docs = {
+  privacy: { en: privacyEn, zh: privacyZh },
+  terms: { en: termsEn, zh: termsZh },
+}
+// 日期只取英文版的：译本跟着英文版走
+const updated = new Date(`${docs[doc].en.frontmatter.updated}T00:00:00Z`)
+const { Content } = docs[doc][lang]
+const date = new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'zh-CN', { dateStyle: 'long', timeZone: 'UTC' }).format(updated)
+---
+
+<article class="mx-auto max-w-3xl px-5 py-12">
+  <h1 class="text-3xl font-semibold tracking-tight">{t.legal[doc].title}</h1>
+  <p class="mt-2 text-sm text-fg-subtle">{t.legal.updated}<time datetime={updated.toISOString().slice(0, 10)}>{date}</time></p>
+  {
+    t.legal.translationNote && (
+      <p class="mt-4 rounded-md bg-bg-subtle px-4 py-3 text-sm text-fg-muted">{t.legal.translationNote}</p>
+    )
+  }
+  <div class="legal mt-8">
+    <Content />
+  </div>
+</article>
+
+<style>
+  .legal {
+    color: var(--fg-muted);
+    line-height: 1.75;
+    font-size: 0.9375rem;
+  }
+  .legal :global(h2) {
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--fg);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .legal :global(h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .legal :global(p),
+  .legal :global(ul),
+  .legal :global(ol) {
+    margin-top: 0.75rem;
+  }
+  .legal :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .legal :global(ol) {
+    list-style: decimal;
+    padding-left: 1.25rem;
+  }
+  .legal :global(li + li) {
+    margin-top: 0.375rem;
+  }
+  .legal :global(strong) {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .legal :global(a) {
+    color: var(--accent-text);
+  }
+  .legal :global(a:hover) {
+    text-decoration: underline;
+  }
+  .legal :global(code) {
+    font-size: 0.875em;
+  }
+</style>
