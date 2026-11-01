@@ -8,16 +8,17 @@ export const zh: Dict = {
   meta: {
     title: 'Anycon — coding agent 跑在你自己的机器上，从任何地方和它对话。',
     description:
-      'Anycon 把跑 AI coding agent 的机器接到一个叫 hub 的小中继上，让你从浏览器、手机、终端或脚本驱动 Claude Code、Codex 和其他 coding agent。自建、端到端加密、开源。',
+      'Anycon 把跑 AI coding agent 的机器接到一个叫 hub 的小中继上，让你从浏览器、手机、终端或脚本驱动 Claude Code、Codex 和其他 coding agent。可以直接用 hub.anycon.ai 上的公共 hub，也可以自建。端到端加密、开源。',
   },
-  nav: { docs: '文档', github: 'GitHub', install: '安装' },
+  nav: { docs: '文档', github: 'GitHub', publicHub: '公共 hub', install: '安装' },
   hero: {
     title: 'coding agent 跑在你自己的机器上。',
     titleAccent: '从任何地方和它对话。',
     lead:
       'Anycon 把跑 AI agent 的那台机器（家里的 Mac mini、工作站、服务器）接到一个叫 hub 的小中继上，然后你可以从浏览器、手机、终端或脚本驱动这些 agent。机器主动出站连 hub：不需要公网 IP，不需要 VPN，不需要端口转发。',
-    primary: '开始使用',
-    secondary: '在 GitHub 上查看',
+    primary: '试用公共 hub',
+    secondary: '自建',
+    tertiary: '在 GitHub 上查看',
     status: 'v0.2 · Apache-2.0 · 支持 Claude Code、Codex 和 ACP agent',
   },
   diagram: {
@@ -75,8 +76,37 @@ export const zh: Dict = {
     ],
     notInScope: '不做：终端和远程 shell、编辑器、经 hub 明文反代 dev server（预览走自己的端到端加密隧道）、issue 跟踪、团队协作。',
   },
+  tryPublic: {
+    heading: '在公共 hub 上试用',
+    lead: '不用自己搭服务器：hub.anycon.ai 上的公共 hub 已经开放注册。你只需要在跑 agent 的机器上装 daemon。',
+    steps: [
+      {
+        title: '登录',
+        body: '打开 hub.anycon.ai，用邮箱登录。我们会给你发一个一次性验证码，第一次登录就会创建账号。',
+        code: null,
+      },
+      {
+        title: '安装 daemon 并发起配对',
+        body: '在跑 agent 的那台机器上执行。hub 的首次设置页面也会按你的平台给出同样的命令。',
+        code: `brew install anycon-ai/tap/anycon
+anycon init --hub https://hub.anycon.ai --workspace ~/anycon --name mac-mini --yes
+anycon service install    # 在后台运行 daemon，登录时自动启动
+anycon pair               # 打印 16 位配对码和配对链接`,
+      },
+      {
+        title: '输入配对码',
+        body: '回到浏览器，输入配对码或打开配对链接。~/anycon/ 下的每个文件夹现在都是一个可以在任何地方操作的项目。手机和其他浏览器也用同样的方式配对。',
+        code: null,
+      },
+    ],
+    plan: '免费套餐：每个账号一个节点（一台运行 daemon 的机器），最多 10 台设备（含这个节点）。',
+    open: '打开 hub.anycon.ai',
+    agree: ['创建账号即表示你同意', '，并已阅读', '。'],
+    terms: '服务条款',
+    privacy: '隐私政策',
+  },
   quickstart: {
-    heading: '快速开始',
+    heading: '自建 hub',
     lead: 'hub 需要 Docker。anycon（daemon 和 CLI 是同一个二进制）支持 macOS、Linux 和 Windows，Windows 的安装方式见部署文档。',
     steps: [
       {
@@ -129,10 +159,10 @@ anycon new --project my-app "run the tests and fix whatever fails"`,
   },
   publicHub: {
     heading: '公共 hub',
-    badge: '即将上线',
+    badge: '已开放',
     body:
-      'anycon.ai 将在 hub.anycon.ai 运行一个公共 hub，让你在自建之前先试用 Anycon。它跑的是和所有自建 hub 相同的开源 release。免费套餐每个账号包含一个节点（一台运行 daemon 的机器）。隐私敏感的使用仍然建议自建：Web UI 的代码由 hub 下发，在公共 hub 上用 Web UI 就是信任它的运营者。',
-    link: '查看路线图',
+      'hub.anycon.ai 跑的是和所有自建 hub 相同的开源 release，让你在自建之前先试用 Anycon。隐私敏感的使用仍然建议自建：Web UI 的代码由 hub 下发，在公共 hub 上用 Web UI 就是信任它的运营者。在公共 hub 上做敏感的事，请用 CLI 或 SDK。',
+    link: '打开 hub.anycon.ai',
   },
   footer: {
     docs: '文档',

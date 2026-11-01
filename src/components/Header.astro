@@ -19,7 +19,9 @@ const otherLangHref = pagePath(lang === 'en' ? 'zh' : 'en', page)
       <span>Anycon</span>
     </a>
     <nav class="flex items-center gap-5 text-sm text-fg-muted">
-      <a href={links.docs} class="hover:text-fg">{t.nav.docs}</a>
+      <!-- 窄屏放不下全部链接：公共 hub 的入口首屏按钮里有，文档在页脚里有 -->
+      <a href={links.hub} class="hidden sm:inline hover:text-fg">{t.nav.publicHub}</a>
+      <a href={links.docs} class="hidden sm:inline hover:text-fg">{t.nav.docs}</a>
       <a href={links.repo} class="hover:text-fg">{t.nav.github}</a>
       <a href={otherLangHref} hreflang={lang === 'en' ? 'zh-CN' : 'en'} class="hover:text-fg">{t.otherLang.label}</a>
       <a
