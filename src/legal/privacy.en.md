@@ -6,7 +6,7 @@ This policy explains what personal data the public Anycon hub at **hub.anycon.ai
 
 ## Who we are
 
-The Service is run by an individual developer based in the People's Republic of China ("we", "us"), who is responsible for the personal data described here. Contact: [contact@anycon.ai](mailto:contact@anycon.ai). Security vulnerabilities: [security@anycon.ai](mailto:security@anycon.ai).
+The Service is run by an individual developer ("we", "us"), who is responsible for the personal data described here. Contact: [contact@anycon.ai](mailto:contact@anycon.ai). Security vulnerabilities: [security@anycon.ai](mailto:security@anycon.ai).
 
 Anycon is open-source software. This policy does not cover:
 
@@ -76,7 +76,7 @@ We may disclose data when the law requires it. We can only disclose what we hold
 
 ## Where your data is stored
 
-The Service's servers are in Hong Kong SAR. If you use the Service from anywhere else, including mainland China, your data is transferred to Hong Kong. The providers listed above may process data in other countries.
+The Service's servers are in Hong Kong SAR. If you use the Service from outside Hong Kong, your data is transferred there. The providers listed above may process data in other countries.
 
 ## How long we keep it
 
@@ -91,7 +91,7 @@ You can delete your account in Account settings → Profile. The hub immediately
 
 ## Your rights
 
-You can see and change your display name, email, sign-in methods, and devices in Account settings, and you can delete your account at any time. Depending on where you live, for example under the EU or UK GDPR or China's Personal Information Protection Law, you may also have the right to get a copy of your data, to have it corrected or deleted, to restrict how we process it, and to object to processing. To exercise these rights, email [contact@anycon.ai](mailto:contact@anycon.ai). We reply within 30 days. You can also complain to your local data protection authority.
+You can see and change your display name, email, sign-in methods, and devices in Account settings, and you can delete your account at any time. Depending on where you live, for example under the EU or UK GDPR, you may also have the right to get a copy of your data, to have it corrected or deleted, to restrict how we process it, and to object to processing. To exercise these rights, email [contact@anycon.ai](mailto:contact@anycon.ai). We reply within 30 days. You can also complain to your local data protection authority.
 
 ## Children
 

@@ -6,7 +6,7 @@ These Terms govern your use of the public Anycon hub at **hub.anycon.ai** (the "
 
 ## 1. Who we are
 
-The Service is run by an individual developer based in the People's Republic of China ("we", "us"). Contact: [contact@anycon.ai](mailto:contact@anycon.ai).
+The Service is run by an individual developer ("we", "us"). Contact: [contact@anycon.ai](mailto:contact@anycon.ai).
 
 ## 2. The Service and the software
 
@@ -69,14 +69,10 @@ You agree to cover our reasonable losses and costs, including legal fees, that a
 
 We may update these Terms. We will post the new version on this page and, for material changes, notify you by email (if your account has one) or on this website at least 30 days before they take effect. If you keep using the Service after that, the updated Terms apply.
 
-## 14. Governing law
-
-These Terms are governed by the laws of the People's Republic of China, which for this purpose excludes the laws of the Hong Kong SAR, the Macao SAR, and Taiwan. Disputes will be submitted to the competent people's court at our place of residence. This does not take away any mandatory consumer protection you have under the law of the country where you live.
-
-## 15. Language
+## 14. Language
 
 These Terms are written in English. Translations are provided for convenience. If a translation differs from the English version, the English version applies.
 
-## 16. Contact
+## 15. Contact
 
 Questions about these Terms: [contact@anycon.ai](mailto:contact@anycon.ai). Security vulnerabilities: [security@anycon.ai](mailto:security@anycon.ai).
