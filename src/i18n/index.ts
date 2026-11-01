@@ -19,6 +19,7 @@ export type Dict = Widen<typeof en>
 export const dicts: Record<Lang, Dict> = { en, zh }
 
 export const links = {
+  hub: 'https://hub.anycon.ai',
   repo: 'https://github.com/anycon-ai/anycon',
   docs: 'https://github.com/anycon-ai/anycon/tree/main/docs',
   deploy: 'https://github.com/anycon-ai/anycon/blob/main/docs/deploy.md',

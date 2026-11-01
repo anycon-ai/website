@@ -6,16 +6,17 @@ export const en = {
   meta: {
     title: 'Anycon — Run coding agents on your own machine. Talk to them from anywhere.',
     description:
-      'Anycon connects the machine that runs your AI coding agents to a small relay called the hub, so you can drive Claude Code, Codex, and other coding agents from a browser, your phone, a terminal, or a script. Self-hosted, end-to-end encrypted, open source.',
+      'Anycon connects the machine that runs your AI coding agents to a small relay called the hub, so you can drive Claude Code, Codex, and other coding agents from a browser, your phone, a terminal, or a script. Try it on the public hub at hub.anycon.ai or self-host your own. End-to-end encrypted, open source.',
   },
-  nav: { docs: 'Docs', github: 'GitHub', install: 'Install' },
+  nav: { docs: 'Docs', github: 'GitHub', publicHub: 'Public hub', install: 'Install' },
   hero: {
     title: 'Run coding agents on your own machine.',
     titleAccent: 'Talk to them from anywhere.',
     lead:
       'Anycon connects the machine that runs your AI agents (a Mac mini at home, a workstation, a server) to a small relay called the hub. Drive those agents from a browser, your phone, a terminal, or a script. The machine dials out, so you need no public IP, no VPN, and no port forwarding.',
-    primary: 'Get started',
-    secondary: 'View on GitHub',
+    primary: 'Try the public hub',
+    secondary: 'Self-host',
+    tertiary: 'View on GitHub',
     status: 'v0.2 · Apache-2.0 · Claude Code, Codex, and ACP agents supported',
   },
   diagram: {
@@ -81,8 +82,38 @@ export const en = {
     ],
     notInScope: 'Not in scope: terminals and remote shells, editors, plaintext reverse-proxying of dev servers through the hub (previews use their own end-to-end encrypted tunnel), issue tracking, team collaboration.',
   },
+  tryPublic: {
+    heading: 'Try it on the public hub',
+    lead: 'No server to set up: the public hub at hub.anycon.ai is open for sign-ups. You only install the daemon on the machine that runs your agents.',
+    steps: [
+      {
+        title: 'Sign in',
+        body: 'Open hub.anycon.ai and sign in with your email address. We send you a one-time code, and your first sign-in creates your account.',
+        code: null,
+      },
+      {
+        title: 'Install the daemon and start pairing',
+        body: 'On the machine that runs your agents. The hub’s setup page shows the same commands for your platform.',
+        code: `brew install anycon-ai/tap/anycon
+anycon init --hub https://hub.anycon.ai --workspace ~/anycon --name mac-mini --yes
+anycon service install    # runs the daemon in the background and at login
+anycon pair               # prints a 16-character code and a pairing link`,
+      },
+      {
+        title: 'Enter the code',
+        body: 'Back in the browser, enter the pairing code or open the pairing link. Every folder under ~/anycon/ is now a project you can work in from anywhere. Pair your phone and other browsers the same way.',
+        code: null,
+      },
+    ],
+    plan: 'Free plan: one node (a machine running the daemon) per account, up to 10 devices including that node.',
+    open: 'Open hub.anycon.ai',
+    // 「创建账号即同意」这句拆成三段，中间两处换成链接
+    agree: ['By creating an account you agree to the ', ' and have read the ', '.'],
+    terms: 'Terms of Service',
+    privacy: 'Privacy Policy',
+  },
   quickstart: {
-    heading: 'Quick start',
+    heading: 'Self-host a hub',
     lead: 'You need Docker for the hub. The anycon binary (daemon and CLI in one) runs on macOS, Linux, and Windows; the deployment guide has the Windows installer.',
     steps: [
       {
@@ -141,10 +172,10 @@ anycon new --project my-app "run the tests and fix whatever fails"`,
   },
   publicHub: {
     heading: 'Public hub',
-    badge: 'Coming soon',
+    badge: 'Open',
     body:
-      'anycon.ai will run a public hub at hub.anycon.ai, so you can try Anycon before hosting your own. It runs the same open-source release as every self-hosted hub. The free plan includes one node (a machine running the daemon) per account. Self-hosting remains the recommended way to use Anycon for anything sensitive: the Web UI’s code is served by the hub, so using it on the public hub means trusting its operator.',
-    link: 'Follow the roadmap',
+      'hub.anycon.ai runs the same open-source release as every self-hosted hub, so you can try Anycon before hosting your own. Self-hosting remains the recommended way to use Anycon for anything sensitive: the Web UI’s code is served by the hub, so using it on the public hub means trusting its operator. On the public hub, use the CLI or SDK for sensitive work.',
+    link: 'Open hub.anycon.ai',
   },
   footer: {
     docs: 'Documentation',

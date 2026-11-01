@@ -1,6 +1,6 @@
 # anycon.ai
 
-The website for [Anycon](https://github.com/anycon-ai/anycon): homepage, links to the docs, and the public hub's status and policies once it launches.
+The website for [Anycon](https://github.com/anycon-ai/anycon): homepage, links to the docs, and the public hub at [hub.anycon.ai](https://hub.anycon.ai) with its terms and privacy policy.
 
 Static site built with [Astro](https://astro.build) and Tailwind. English is the default language (`/`), Chinese is served under `/zh/`.
 

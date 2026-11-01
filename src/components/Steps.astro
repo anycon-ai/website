@@ -1,0 +1,28 @@
+---
+// 编号的步骤列表：标题、说明，可选一段命令。公共 hub 和自建两节共用。
+import Code from './Code.astro'
+
+interface Props {
+  steps: readonly { title: string; body: string; code: string | null }[]
+}
+const { steps } = Astro.props
+---
+
+<ol class="mt-8 space-y-8">
+  {
+    steps.map((s, i) => (
+      <li class="grid gap-3 md:grid-cols-[2.5rem_1fr]">
+        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent-subtle text-sm font-semibold text-accent-text">{i + 1}</div>
+        <div>
+          <h3 class="font-semibold">{s.title}</h3>
+          <p class="mt-1 text-sm text-fg-muted">{s.body}</p>
+          {s.code !== null && (
+            <div class="mt-3">
+              <Code code={s.code} />
+            </div>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
