@@ -6,7 +6,7 @@ export const en = {
   meta: {
     title: 'Anycon — Run coding agents on your own machine. Talk to them from anywhere.',
     description:
-      'Anycon connects the machine that runs your AI coding agents to a small relay called the hub, so you can drive Claude Code and Codex from a browser, your phone, a terminal, or a script. Self-hosted, end-to-end encrypted, open source.',
+      'Anycon connects the machine that runs your AI coding agents to a small relay called the hub, so you can drive Claude Code, Codex, and other coding agents from a browser, your phone, a terminal, or a script. Self-hosted, end-to-end encrypted, open source.',
   },
   nav: { docs: 'Docs', github: 'GitHub', install: 'Install' },
   hero: {
@@ -16,7 +16,7 @@ export const en = {
       'Anycon connects the machine that runs your AI agents (a Mac mini at home, a workstation, a server) to a small relay called the hub. Drive those agents from a browser, your phone, a terminal, or a script. The machine dials out, so you need no public IP, no VPN, and no port forwarding.',
     primary: 'Get started',
     secondary: 'View on GitHub',
-    status: 'v0.1 · Apache-2.0 · Claude Code and Codex supported',
+    status: 'v0.2 · Apache-2.0 · Claude Code, Codex, and ACP agents supported',
   },
   diagram: {
     machine: 'your machine',
@@ -56,7 +56,7 @@ export const en = {
       },
       {
         title: 'Agent-agnostic',
-        body: 'Claude Code and Codex work out of the box. More agents can be added through the adapter interface.',
+        body: 'Claude Code, Codex, and agents that speak the Agent Client Protocol, such as OpenCode, Gemini CLI, and Goose, work out of the box. More can be added through the adapter interface.',
       },
       {
         title: 'Folders are projects',
@@ -79,11 +79,11 @@ export const en = {
       'Your machine has to stay on, and keeping it online and backed up is up to you.',
       'The model API still sees your context. The Claude Code on your machine still sends prompts to its provider. Anycon doesn’t change that.',
     ],
-    notInScope: 'Not in scope: terminals and remote shells, editors, previewing local dev servers through the hub, issue tracking, team collaboration.',
+    notInScope: 'Not in scope: terminals and remote shells, editors, plaintext reverse-proxying of dev servers through the hub (previews use their own end-to-end encrypted tunnel), issue tracking, team collaboration.',
   },
   quickstart: {
     heading: 'Quick start',
-    lead: 'You need Docker for the hub. The anycon binary (daemon and CLI in one) runs on macOS and Linux.',
+    lead: 'You need Docker for the hub. The anycon binary (daemon and CLI in one) runs on macOS, Linux, and Windows; the deployment guide has the Windows installer.',
     steps: [
       {
         title: 'Run a hub',
@@ -113,7 +113,7 @@ anycon pair               # prints a 16-character code and a pairing link`,
     items: [
       {
         title: 'Web UI',
-        body: 'Served by the hub and installable as a PWA. Streaming Markdown, tool-call rendering, diffs, permission approvals, per-session worktrees, image attachments, Web Push. English and Chinese.',
+        body: 'Served by the hub and installable as a PWA. Streaming Markdown, tool-call rendering, diffs, permission approvals, per-session worktrees, file attachments, dev server previews, full-text search, a read-only file browser, Web Push. English and Chinese.',
       },
       {
         title: 'CLI',
@@ -134,15 +134,16 @@ anycon new --project my-app "run the tests and fix whatever fails"`,
       'The daemon and every client talk over Noise end-to-end encryption. The hub sees metadata: which device talks to which, when, and how many bytes, plus account-level data like device names and account identifiers.',
       'The Web UI’s code is served by the hub. A malicious or compromised hub could serve modified JavaScript and read keys and plaintext in your browser. Using the Web UI means trusting the operator of that hub. For sensitive use, self-host the hub, or use the CLI / SDK, whose code you install yourself.',
       'Pairing codes are generated on the daemon and never sent to the hub. Both sides derive the pre-shared key from the code with Argon2id.',
+      'Dev server previews run on a separate domain and travel through their own Noise tunnel to the daemon. The hub sees that a preview is open and how much traffic it carries, not the pages. The preview loader is also served by the hub, so the same trust caveat as the Web UI applies.',
       'Anycon is not a sandbox.',
     ],
     link: 'Full threat model and security policy',
   },
   publicHub: {
     heading: 'Public hub',
-    badge: 'Planned for v0.2',
+    badge: 'Coming soon',
     body:
-      'anycon.ai will run a public hub with resource limits as a try-before-you-self-host entry point. It runs the same open-source release as every self-hosted hub, and its costs and donations will be published here. Self-hosting remains the recommended way to use Anycon for anything sensitive.',
+      'anycon.ai will run a public hub at hub.anycon.ai, so you can try Anycon before hosting your own. It runs the same open-source release as every self-hosted hub. The free plan includes one node (a machine running the daemon) per account. Self-hosting remains the recommended way to use Anycon for anything sensitive: the Web UI’s code is served by the hub, so using it on the public hub means trusting its operator.',
     link: 'Follow the roadmap',
   },
   footer: {

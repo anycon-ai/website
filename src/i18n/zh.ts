@@ -8,7 +8,7 @@ export const zh: Dict = {
   meta: {
     title: 'Anycon — coding agent 跑在你自己的机器上，从任何地方和它对话。',
     description:
-      'Anycon 把跑 AI coding agent 的机器接到一个叫 hub 的小中继上，让你从浏览器、手机、终端或脚本驱动 Claude Code 和 Codex。自建、端到端加密、开源。',
+      'Anycon 把跑 AI coding agent 的机器接到一个叫 hub 的小中继上，让你从浏览器、手机、终端或脚本驱动 Claude Code、Codex 和其他 coding agent。自建、端到端加密、开源。',
   },
   nav: { docs: '文档', github: 'GitHub', install: '安装' },
   hero: {
@@ -18,7 +18,7 @@ export const zh: Dict = {
       'Anycon 把跑 AI agent 的那台机器（家里的 Mac mini、工作站、服务器）接到一个叫 hub 的小中继上，然后你可以从浏览器、手机、终端或脚本驱动这些 agent。机器主动出站连 hub：不需要公网 IP，不需要 VPN，不需要端口转发。',
     primary: '开始使用',
     secondary: '在 GitHub 上查看',
-    status: 'v0.1 · Apache-2.0 · 支持 Claude Code 和 Codex',
+    status: 'v0.2 · Apache-2.0 · 支持 Claude Code、Codex 和 ACP agent',
   },
   diagram: {
     machine: '你的机器',
@@ -51,7 +51,10 @@ export const zh: Dict = {
         title: 'hub 只看到元数据',
         body: '会话历史在你的机器上。客户端和 daemon 之间是 Noise 端到端加密，hub 只转发密文、只看到元数据。',
       },
-      { title: 'agent 无关', body: 'Claude Code、Codex 开箱即用，其它 agent 通过 adapter 接口接入。' },
+      {
+        title: 'agent 无关',
+        body: 'Claude Code、Codex，以及 OpenCode、Gemini CLI、Goose 等说 Agent Client Protocol 的 agent 开箱即用，其它 agent 通过 adapter 接口接入。',
+      },
       {
         title: '文件夹即项目',
         body: 'workspace 目录下每个文件夹就是一个项目。在任何客户端都能新建、克隆，或者关联机器上已有的目录。',
@@ -70,11 +73,11 @@ export const zh: Dict = {
       '机器要常开，联网、备份都是你的事。',
       '模型 API 照样看得到上下文。你机器上的 Claude Code 依然把提示发给它的模型提供方，Anycon 不改变这一点。',
     ],
-    notInScope: '不做：终端和远程 shell、编辑器、经 hub 预览本地 dev server、issue 跟踪、团队协作。',
+    notInScope: '不做：终端和远程 shell、编辑器、经 hub 明文反代 dev server（预览走自己的端到端加密隧道）、issue 跟踪、团队协作。',
   },
   quickstart: {
     heading: '快速开始',
-    lead: 'hub 需要 Docker。anycon（daemon 和 CLI 是同一个二进制）支持 macOS 和 Linux。',
+    lead: 'hub 需要 Docker。anycon（daemon 和 CLI 是同一个二进制）支持 macOS、Linux 和 Windows，Windows 的安装方式见部署文档。',
     steps: [
       {
         title: '启动 hub',
@@ -104,7 +107,7 @@ anycon pair               # 打印 16 位配对码和配对链接`,
     items: [
       {
         title: 'Web UI',
-        body: '由 hub 提供，可安装为 PWA。流式 Markdown、工具调用渲染、diff、权限审批、每会话 worktree、图片附件、Web Push。英文和中文。',
+        body: '由 hub 提供，可安装为 PWA。流式 Markdown、工具调用渲染、diff、权限审批、每会话 worktree、文件附件、dev server 预览、全文搜索、只读文件浏览、Web Push。英文和中文。',
       },
       { title: 'CLI', body: '在任何终端里新建会话、实时看输出，权限请求直接在终端里答复。' },
       { title: 'TypeScript SDK', body: '配对一次，之后从脚本和 CI 连接节点、驱动会话。' },
@@ -119,15 +122,16 @@ anycon new --project my-app "run the tests and fix whatever fails"`,
       'daemon 和每个客户端之间是 Noise 端到端加密。hub 看到的是元数据：哪台设备和哪台设备通信、什么时候、多少字节，以及设备名、账号标识这类账号层数据。',
       'Web UI 的代码由 hub 下发。恶意或被入侵的 hub 可以下发改过的 JavaScript，读走浏览器里的密钥和明文。用 Web UI 就是信任那个 hub 的运营者。隐私敏感的使用请自建 hub，或者用 CLI / SDK，它们的代码由你自己安装。',
       '配对码在 daemon 上生成，不经过 hub。两端用 Argon2id 从配对码派生预共享密钥。',
+      'dev server 预览跑在单独的域名上，经自己的 Noise 隧道到 daemon。hub 看得到有一个预览开着、流量多大，看不到页面内容。预览的加载代码同样由 hub 下发，信任前提和 Web UI 一样。',
       'Anycon 不是沙箱。',
     ],
     link: '完整威胁模型和安全策略',
   },
   publicHub: {
     heading: '公共 hub',
-    badge: 'v0.2 计划中',
+    badge: '即将上线',
     body:
-      'anycon.ai 将运行一个有资源限制的公共 hub，作为自建之前的试用入口。它跑的是和所有自建 hub 相同的开源 release，成本和捐赠会在这里公开。隐私敏感的使用仍然建议自建。',
+      'anycon.ai 将在 hub.anycon.ai 运行一个公共 hub，让你在自建之前先试用 Anycon。它跑的是和所有自建 hub 相同的开源 release。免费套餐每个账号包含一个节点（一台运行 daemon 的机器）。隐私敏感的使用仍然建议自建：Web UI 的代码由 hub 下发，在公共 hub 上用 Web UI 就是信任它的运营者。',
     link: '查看路线图',
   },
   footer: {
