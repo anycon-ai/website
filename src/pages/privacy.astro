@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro'
+import Legal from '../components/Legal.astro'
+import { dicts } from '../i18n'
+
+const t = dicts.en.legal.privacy
+---
+
+<Base lang="en" page="privacy" title={`${t.title} · Anycon`} description={t.description}><Legal lang="en" doc="privacy" /></Base>

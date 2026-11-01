@@ -4,7 +4,7 @@ import type { Dict } from './index'
 export const zh: Dict = {
   lang: 'zh',
   htmlLang: 'zh-CN',
-  otherLang: { href: '/', label: 'English' },
+  otherLang: { label: 'English' },
   meta: {
     title: 'Anycon — coding agent 跑在你自己的机器上，从任何地方和它对话。',
     description:
@@ -135,6 +135,20 @@ anycon new --project my-app "run the tests and fix whatever fails"`,
     github: 'GitHub',
     releases: '发布',
     security: '安全',
+    privacy: '隐私政策',
+    terms: '服务条款',
     license: 'Apache-2.0',
+  },
+  legal: {
+    updated: '最后更新：',
+    translationNote: '本页是英文版的中文译本，仅供参考；两者不一致时以英文版为准。',
+    privacy: {
+      title: '隐私政策',
+      description: 'anycon.ai 公共 hub（hub.anycon.ai）和 anycon.ai 网站处理哪些个人数据、为什么、保留多久。',
+    },
+    terms: {
+      title: '服务条款',
+      description: '使用 anycon.ai 公共 hub（hub.anycon.ai）的条款。',
+    },
   },
 }

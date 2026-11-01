@@ -2,7 +2,7 @@
 export const en = {
   lang: 'en',
   htmlLang: 'en',
-  otherLang: { href: '/zh/', label: '简体中文' },
+  otherLang: { label: '简体中文' },
   meta: {
     title: 'Anycon — Run coding agents on your own machine. Talk to them from anywhere.',
     description:
@@ -150,6 +150,21 @@ anycon new --project my-app "run the tests and fix whatever fails"`,
     github: 'GitHub',
     releases: 'Releases',
     security: 'Security',
+    privacy: 'Privacy',
+    terms: 'Terms',
     license: 'Apache-2.0',
+  },
+  legal: {
+    updated: 'Last updated: ',
+    // 只有译本显示这句；英文版是真源，留空
+    translationNote: '',
+    privacy: {
+      title: 'Privacy Policy',
+      description: 'What personal data the public Anycon hub at hub.anycon.ai and the anycon.ai website handle, why, and for how long.',
+    },
+    terms: {
+      title: 'Terms of Service',
+      description: 'The terms for using the public Anycon hub at hub.anycon.ai.',
+    },
   },
 } as const
