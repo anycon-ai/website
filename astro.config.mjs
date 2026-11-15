@@ -12,6 +12,6 @@ export default defineConfig({
     locales: ['en', 'zh'],
     routing: { prefixDefaultLocale: false },
   },
-  integrations: [sitemap({ i18n: { defaultLocale: 'en', locales: { en: 'en', zh: 'zh-CN' } } })],
+  integrations: [sitemap({ filter: (page) => !/\/404\/?$/.test(page), i18n: { defaultLocale: 'en', locales: { en: 'en', zh: 'zh-CN' } } })],
   vite: { plugins: [tailwindcss()] },
 })

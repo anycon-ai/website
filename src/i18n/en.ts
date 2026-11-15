@@ -186,6 +186,14 @@ anycon new --project my-app "run the tests and fix whatever fails"`,
     terms: 'Terms',
     license: 'Apache-2.0',
   },
+  notFound: {
+    title: 'Page not found · Anycon',
+    code: '404',
+    heading: 'This page does not exist.',
+    body: 'The link may be wrong, or the page may have moved. Head back to the homepage, or read the docs.',
+    home: 'Back to homepage',
+    docs: 'Read the docs',
+  },
   legal: {
     updated: 'Last updated: ',
     // 只有译本显示这句；英文版是真源，留空

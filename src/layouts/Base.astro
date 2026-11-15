@@ -12,8 +12,10 @@ interface Props {
   // 不给就用首页的标题和描述
   title?: string
   description?: string
+  // 错误页：不给搜索引擎收录，也不声明 canonical / hreflang
+  noindex?: boolean
 }
-const { lang, page = 'home' } = Astro.props
+const { lang, page = 'home', noindex = false } = Astro.props
 const t = dicts[lang]
 const title = Astro.props.title ?? t.meta.title
 const description = Astro.props.description ?? t.meta.description
@@ -30,10 +32,18 @@ const zhUrl = new URL(pagePath('zh', page), site)
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical.href} />
-    <link rel="alternate" hreflang="en" href={enUrl.href} />
-    <link rel="alternate" hreflang="zh-CN" href={zhUrl.href} />
-    <link rel="alternate" hreflang="x-default" href={enUrl.href} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <>
+          <link rel="canonical" href={canonical.href} />
+          <link rel="alternate" hreflang="en" href={enUrl.href} />
+          <link rel="alternate" hreflang="zh-CN" href={zhUrl.href} />
+          <link rel="alternate" hreflang="x-default" href={enUrl.href} />
+        </>
+      )
+    }
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
@@ -42,7 +52,7 @@ const zhUrl = new URL(pagePath('zh', page), site)
     <meta property="og:site_name" content="Anycon" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical.href} />
+    {!noindex && <meta property="og:url" content={canonical.href} />}
     <meta property="og:image" content={new URL('/icon-512.png', site).href} />
     <meta name="twitter:card" content="summary" />
     <link rel="sitemap" href="/sitemap-index.xml" />

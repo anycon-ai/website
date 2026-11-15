@@ -30,8 +30,9 @@ export const links = {
 } as const
 
 // 站内页面的路径：英文不带语言前缀，中文在 /zh/ 下。
-export type Page = 'home' | 'privacy' | 'terms'
+export type Page = 'home' | 'privacy' | 'terms' | 'notFound'
 export function pagePath(lang: Lang, page: Page): string {
   const prefix = lang === 'en' ? '/' : '/zh/'
-  return page === 'home' ? prefix : `${prefix}${page}`
+  if (page === 'home') return prefix
+  return `${prefix}${page === 'notFound' ? '404' : page}`
 }
