@@ -1,8 +1,8 @@
 ---
-updated: '2026-11-01'
+updated: '2026-11-21'
 ---
 
-This policy explains what personal data the public Anycon hub at **hub.anycon.ai** (the "Service") and this website (**anycon.ai**) handle, why, and for how long.
+This policy explains what personal data the public Anycon hub at **hub.anycon.ai** (the "Service") and this website (**anycon.ai**) handle, why, and for how long. It also covers the Anycon daemon's update check to anycon.ai.
 
 ## Who we are
 
@@ -11,7 +11,7 @@ The Service is run by an individual developer ("we", "us"), who is responsible f
 Anycon is open-source software. This policy does not cover:
 
 - hubs run by anyone else, including a hub you host yourself. The operator of that hub is responsible for it.
-- the Anycon software on your own machines (the daemon, CLI, and SDK). It keeps its data on those machines and sends us no telemetry.
+- the Anycon software on your own machines (the daemon, CLI, and SDK). It keeps its data on those machines. Apart from connecting to the hub you choose, the CLI and SDK send us nothing, and the only request the daemon makes to us is the update check described under "Daemon update check" below, which this policy does cover.
 - services you choose to use alongside Anycon, such as the AI agents on your machine and their model providers.
 
 ## How the Service works, and what the hub sees
@@ -28,8 +28,8 @@ The hub's database holds the following:
 
 - **Your account**: an account ID, a display name, and an email address if the account has one. At sign-up, the display name is taken from your GitHub or Google profile name, or your GitHub username, or the part of your email address before the "@". You can change it in Account settings. The email address is one you signed in with or added in settings, or one that GitHub or Google reported as verified.
 - **Linked sign-in accounts**: for each linked GitHub or Google account, the provider and its stable user ID. We do not store usernames, avatars, or access tokens from these providers.
-- **Your devices**: for each device on your account (a daemon, browser, CLI, or SDK client), a device ID, its name, the platform it reports (operating system, architecture, and client version), the address a browser used to open the hub, a hash of the device's access token, and when it was created, last seen, and revoked. Browser device names default to something like "Chrome · macOS · hub.anycon.ai". The hub also records which of your devices are paired with each other.
-- **Browser sign-in sessions**: a hash of the session token, the browser's user agent, an IP address prefix, and when the session was created, last used, and expires. An IP prefix is the first three numbers of an IPv4 address or the first 48 bits of an IPv6 address. The database never stores full IP addresses.
+- **Your devices**: for each device on your account (a daemon, browser, CLI, or SDK client), a device ID, its name, the platform it reports (operating system, architecture, and client version), the address a browser used to open the hub, a hash of the device's access token, the IP prefix it most recently connected from (refreshed while it stays connected), and when it was created, last seen, and revoked. An IP prefix is the first three numbers of an IPv4 address or the first 48 bits of an IPv6 address. The database never stores full IP addresses. Browser device names default to something like "Chrome · macOS · hub.anycon.ai". The hub also records which of your devices are paired with each other.
+- **Browser sign-in sessions**: a hash of the session token, the browser's user agent, an IP prefix, and when the session was created, last used, and expires.
 - **Security records**: successful and failed sign-ins (method, IP prefix, and user agent), account creation, changes to your email and sign-in methods, devices paired, enrolled, or revoked, device token rotations (with IP prefix), and administrator changes.
 - **Push notification subscriptions**: for each browser that turned on push notifications, the push service address and the keys your browser provided.
 - **Notification preferences.**
@@ -41,7 +41,7 @@ The hub does not store session content, project files, or attachments. Session c
 
 ## Server logs
 
-The hub's logs record connections and disconnections with device IDs, request routes without their parameters, status codes and timings, rate-limit and plan-limit events, and whether each email and push notification was delivered. Email addresses appear in the logs only as a short hash. The logs never contain message content, tokens, or sign-in codes. The proxy and network providers in front of the hub may log full IP addresses, user agents, and request times.
+The hub's logs record connections and disconnections with device IDs, request routes without their parameters, status codes and timings, rate-limit and plan-limit events, and whether each email and push notification was delivered. Email addresses appear in the logs only as a short hash. The logs never contain message content, tokens, or sign-in codes. The proxy and network providers in front of the hub may log full IP addresses, user agents, and request times. The log of the daemon's update-check requests to anycon.ai is described under "Daemon update check".
 
 ## Emails and push notifications
 
@@ -55,20 +55,39 @@ hub.anycon.ai sets a cookie to keep you signed in and a short-lived cookie durin
 
 The Web UI keeps its keys and a cache of your sessions in your browser's storage (IndexedDB) on your device. This data is not sent to us. Dev server previews keep their access token in the preview site's browser storage and set no cookies of ours.
 
-anycon.ai is a static website. It sets no cookies and uses no analytics. Its hosting provider may keep standard access logs.
+anycon.ai is a static website. Its pages set no cookies and run no analytics scripts. Cloudflare and our server may keep standard access logs of requests to it, with the IP address, time, requested address, and user agent. Of these requests, only the daemon's update checks are used for statistics, as described in the next section.
+
+## Daemon update check
+
+This section applies to everyone who runs the Anycon daemon, whichever hub it connects to.
+
+By default, the daemon requests `https://anycon.ai/releases.json` about once every 24 hours to learn whether a newer release exists. The request carries no account, device, or installation identifier. Its user agent is `anycon/<version> (<os>; <arch>)`. If a newer release exists, the daemon shows a notice. It does not download or install anything. The CLI and SDK make no such request.
+
+anycon.ai is delivered through Cloudflare, so Cloudflare and our server see each request's IP address, time, and user agent. Our server keeps these requests in a dedicated access log for up to 30 days and uses them for one purpose: once a day, it counts how many daemons checked in, grouped by country, version, and platform. The country is derived from the IP address with an offline GeoIP database on our server. After that, only the counts are kept, and they contain no IP addresses.
+
+To turn the update check off, set `check = false` in the `[update]` section of the daemon's `config.toml`, or set the environment variable `ANYCON_UPDATE_CHECK=0`.
 
 ## Why we use your data
 
 - **To provide the Service**: signing you in, routing messages between your devices, sending the notifications you ask for, and applying plan limits.
 - **To keep the Service and your account secure**: rate limits, security records, and detecting and stopping abuse.
+- **To understand how much the Service and the daemon are used**, and to schedule maintenance for times when few people are connected: the counts described under "Daemon update check" and "Usage statistics".
 - **To comply with the law.**
 
 We do not sell personal data, and we do not use it for advertising or profiling. We do not use any data from the Service to train AI models.
 
+## Usage statistics
+
+Once a day and once an hour, a job on our server reads account creation times, device last-seen times and device types, and IP prefixes (from device records and from sign-in security records). From these it produces counts: new, activated, and recently active accounts per country, and how many accounts and devices are online. The country is derived from the IP prefix with an offline GeoIP database on our server. No data is sent to a third party for this.
+
+The stored statistics are counts only. They contain no account IDs, device IDs, IP addresses, or IP prefixes, and we keep them indefinitely. We use them to understand how much the Service is used and to schedule maintenance for times when few people are connected. We do not use them for profiling or advertising, and nothing in them is about an individual user.
+
+We also record the public download counts of our release files and npm packages from GitHub and npm. These involve no personal data.
+
 ## Who else processes your data
 
 - **Alibaba Cloud**: server hosting in Hong Kong, and delivery of our emails.
-- **Cloudflare**: network delivery and protection for hub.anycon.ai and the preview domain. Cloudflare terminates TLS, so it sees request metadata and the Web UI code it delivers. Session content stays end-to-end encrypted.
+- **Cloudflare**: network delivery and protection for anycon.ai and hub.anycon.ai. Cloudflare terminates TLS for these two, so it sees request metadata, including the daemon's update-check requests to anycon.ai, and the Web UI code it delivers. Session content stays end-to-end encrypted. The preview domain is served directly by our server. Cloudflare provides only its DNS.
 - **GitHub and Google**, only if you sign in with them. Your sign-in goes through them under their own privacy policies.
 - **Browser push services**, only if you turn on push notifications.
 
@@ -80,12 +99,13 @@ The Service's servers are in Hong Kong SAR. If you use the Service from outside 
 
 ## How long we keep it
 
-- Account data, devices, linked accounts, and notification settings: until you delete them or your account.
+- Account data, devices (including each device's most recent IP prefix), linked accounts, and notification settings: until you delete them or your account.
 - Browser sign-in sessions: until you sign out, or 30 days after they were last used.
 - Security records: 90 days.
 - Sign-in codes, sign-in state, and preview tokens: deleted once they expire, between 10 minutes and 24 hours.
-- Server logs: up to 30 days.
+- Server logs, including the update-check log on anycon.ai: up to 30 days.
 - Backups: up to 30 days.
+- Aggregate statistics from the update check and from the Service: indefinitely. They contain no personal data.
 
 You can delete your account in Account settings → Profile. The hub immediately disconnects your devices and deletes the data tied to your account, including devices, pairings, sign-in methods, push subscriptions, and security records. It keeps one record that an account was deleted, with no IP address or user agent, which is removed after 90 days like other security records. Copies in logs and backups expire on the schedule above. Session history on your machines is not affected.
 
